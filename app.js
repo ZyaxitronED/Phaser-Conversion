@@ -21,7 +21,32 @@ const mainState = {
     this.bullets.enableBody = true;
     this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
 
+    for (let i = 0; i < 20; i++) {
+      let b = this.bullets.create(0, 0, 'bullet');
+      b.visible = false;
+      b.exists = false;
+      b.checkWorldBounds = true;
+      b.events.onOutOfBounds.add((bullet) => { bullet.kill(); });
+    }
+
+    this.bulletTime = 0;
+
+    this.cursors = game.input.keyboard.createCursorKeys();
+    game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
+
   },
+
+fire: function () { console.log("fire");
+
+  if (game.time.now > this.bulletTime) {
+    let bullet = this.bullets.getFirstExists(false);
+    if (bullet != null) {
+      bullet.reset(this.ship.x, this.ship.y);
+      bullet.body.velocity.y = -300;
+      this.bulletTime = this.time.now + 150;
+    }
+}
+},
 
   preload: function () {
     game.load.image('ship', 'assets/ship.png');
@@ -30,7 +55,19 @@ const mainState = {
     game.load.audio('fire', 'assets/fire.mp3');
   },
 
-  update: function () { console.log("update"); }
+  update: function () {
+    if(this.cursors.left.isDown) {
+      this.ship.body.velocity.x = -300;
+    } else if (this.cursors.right.isDown) {
+      this.ship.body.velocity.x = 300;
+    } else {
+      this.ship.body.velocity.x = 0;
+    }
+
+    if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+      this.fire();
+    }
+   }
 };
 
 const gameOverState = {
