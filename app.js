@@ -48,6 +48,11 @@ fire: function () { console.log("fire");
 }
 },
 
+hit: function (bullet, alien) {
+  bullet.kill();
+  alien.kill();
+},
+
   preload: function () {
     game.load.image('ship', 'assets/ship.png');
     game.load.image('enemy', 'assets/enemy.png');
@@ -56,6 +61,8 @@ fire: function () { console.log("fire");
   },
 
   update: function () {
+    game.physics.arcade.overlap(this.bullets, this.aliens, this.hit, null, this);
+
     if(this.cursors.left.isDown) {
       this.ship.body.velocity.x = -300;
     } else if (this.cursors.right.isDown) {
