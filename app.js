@@ -3,9 +3,11 @@ const mainState = {
   create: function () {
     game.stage.backgroundColor = '#2d2d2d';
 
+    //Create the ship (player)
     this.ship = game.add.sprite(400, 550, 'ship');
     game.physics.enable(this.ship, Phaser.Physics.ARCADE);
 
+    //Create aliens (enemy)
     this.aliens = game.add.group();
     this.aliens.enableBody = true;
     this.aliens.physicsBodyType = Phaser.Physics.ARCADE;
@@ -15,6 +17,7 @@ const mainState = {
       c.body.immovable = true;
     }
 
+    //Create the bullets that the player fires
     this.bullets = game.add.group();
     this.bullets.enableBody = true;
     this.bullets.physicsBodyType = Phaser.Physics.ARCADE;
@@ -25,10 +28,13 @@ const mainState = {
       b.visible = false;
       b.checkWorldBounds = true;
       b.events.onOutOfBounds.add((bullet) => { bullet.kill(); });
+      this.bullets.setAll('anchor.x', 0.5);
+      this.bullets.setAll('anchor.y', -3);
     }
 
     this.bulletTime = 0;
 
+    //Creates the explosion that occurs when the player is hit by an alien ship
     this.explosion = this.game.add.sprite(0, 0, 'explode');
     this.explosion.exists = false;
     this.explosion.visible = false;
@@ -37,6 +43,7 @@ const mainState = {
     this.explosion.anchor.y = 0.5;
     this.explosion.animations.add('boom');
 
+    //Creates the highscore board
     this.highScore = localStorage.getItem('invadershighscore');
     if (this.highScore === null) {
       localStorage.setItem('invadershighscore', 0);
@@ -46,8 +53,10 @@ const mainState = {
     this.score = 0;
     this.scoreDisplay = game.add.text(200, 20, `Score: ${this.score} \nHighScore: ${this.highScore}`, { font: '30px Arial', fill: '#ffffff' });
 
+    //Creates the sound of the bullets being fired when the spacebar is pressed
     this.fireSound = game.add.audio('fire');
 
+    //Game input
     this.cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
   },
@@ -114,6 +123,7 @@ const mainState = {
     } else if (this.cursors.right.isDown) {
       this.ship.body.velocity.x = 300;
     }
+
     if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
       this.fire();
     }
