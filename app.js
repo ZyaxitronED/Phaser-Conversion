@@ -32,13 +32,27 @@ const mainState = {
       this.bullets.setAll('anchor.y', -3);
     }
 
+    //Create the enemy bullets
+    this.enemyBullets = game.add.group();
+    this.enemyBullets.enableBody = true;
+    this.enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
+
+    for (let i = 0; i < 3; i++) {
+      let e = this.enemyBullets.create(0, 0, 'enemyBullet');
+      e.exists = false;
+      e.visible = false;
+      e.checkWorldBounds = true;
+      e.events.onOutOfBounds.add((enemyBullet) => { enemyBullet.kill(); });
+      this.enemyBullets.setAll('anchor.x', 0.5);
+      this.enemyBullets.setAll('anchor.y', 1);
+    }
+
     this.bulletTime = 0;
 
     //Creates the explosion that occurs when the player is hit by an alien ship
     this.explosion = this.game.add.sprite(0, 0, 'explode');
     this.explosion.exists = false;
     this.explosion.visible = false;
-    // this.explosion.frame = 6; // show one frame of the spritesheet
     this.explosion.anchor.x = 0.5;
     this.explosion.anchor.y = 0.5;
     this.explosion.animations.add('boom');
@@ -48,6 +62,21 @@ const mainState = {
     if (this.highScore === null) {
       localStorage.setItem('invadershighscore', 0);
       this.highScore = 0;
+    }
+
+    //Creates lives
+    lives = game.add.group();
+    //game.add.text(game.world.width - 100, 10, 'Lives : ', { font '34px Arial', fill: '#fff' });
+
+    stateText = game.add.text(game.world.centerX, game.world.centerY, '', { font: '84px Arial', fill: '#fff' });
+    stateText.anchor.setTo(0.5, 0.5);
+    stateText.visible = false;
+
+    for (let i = 0; i < 3; i++) {
+      var ship = lives.create(game.world.width - 100 + (30 * i), 60, 'ship');
+      ship.anchor.setTo(0.5, 0.5);
+      ship.angle = 90;
+      ship.alpha = 0.4;
     }
 
     this.score = 0;
@@ -96,6 +125,7 @@ const mainState = {
     game.load.image('ship', 'assets/ship.png');
     game.load.image('enemy', 'assets/enemy.png');
     game.load.image('bullet', 'assets/bullet.png');
+    game.load.image('enemyBullet', 'assets/enemybullet.png')
     game.load.spritesheet('explode', 'assets/explode.png', 128, 128);
     game.load.audio('fire', 'assets/fire.mp3');
   },
@@ -106,9 +136,49 @@ const mainState = {
     this.explosion.animations.play('boom');
   },
 
+  collisionHandler: function (bullet, ship) {
+    bullet.kill();
+    live = lives.getFirstAlive();
+
+    if (live) {
+      live.kill();
+    }
+
+    if (lives.countLiving() < 1) {
+      this.ship.kill();
+      this.enemyBullets.callAll('kill');
+    }
+  },
+
+  enemyFires: function () {
+    var livingEnemies = [];
+
+    enemyBullet = this.enemyBullets.getFirstExists(false);
+
+    livingEnemies.length = 0;
+
+    this.aliens.forEachAlive(function(alien) {
+      livingEnemies.push(alien);
+    });
+
+    if (enemyBullet && livingEnemies.length > 0)
+    {
+      let random = this.game.rnd.integerInRange(0, livingEnemies.length-1);
+      let shooter = livingEnemies[random];
+      enemyBullet.reset(shooter.body.x, shooter.body.y);
+
+      game.physics.arcade.moveToObject(enemyBullet, this.ship, 120);
+
+      firingTimer = this.game.time.now + 2000;
+    }
+  },
+
   update: function () {
+    let firingTimer = 0;
+
     game.physics.arcade.overlap(this.bullets, this.aliens, this.hit, null, this);
     game.physics.arcade.overlap(this.aliens, this.ship, this.shipGotHit, null, this);
+    game.physics.arcade.overlap(this.enemyBullets, this.ship, this.collisionHandler, null, this);
 
     this.ship.body.velocity.x = 0;
     this.aliens.forEach(
@@ -118,14 +188,22 @@ const mainState = {
       }
     );
 
-    if (this.cursors.left.isDown) {
-      this.ship.body.velocity.x = -300;
-    } else if (this.cursors.right.isDown) {
-      this.ship.body.velocity.x = 300;
-    }
+    if (this.ship.alive) {
+      this.ship.body.velocity.setTo(0, 0);
 
-    if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-      this.fire();
+      if (this.cursors.left.isDown) {
+        this.ship.body.velocity.x = -300;
+      } else if (this.cursors.right.isDown) {
+        this.ship.body.velocity.x = 300;
+      }
+
+      if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+        this.fire();
+      }
+
+      if (this.game.time.now > firingTimer) {
+        this.enemyFires();
+      }
     }
   }
 };
