@@ -142,9 +142,10 @@ const mainState = {
 
     if (live) {
       live.kill();
+      this.ship.reset(this.game.rnd.integerInRange(0, this.game.width * 1), game.world.height * 0.92);
     }
 
-    if (lives.countLiving() < 1) {
+    if (lives.countLiving() < 0) {
       this.ship.kill();
       this.enemyBullets.callAll('kill');
     }
