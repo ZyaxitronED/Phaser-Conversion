@@ -209,6 +209,12 @@ const mainState = {
   }
 };
 
+const secondState = {
+  preload: function () {
+    game.load.image('enemy2', 'assets/enemy2.png');
+  }
+}
+
 const gameoverState = {
   preload: function () {
     game.load.image('gameover', 'assets/gameover.jpg');
@@ -225,5 +231,6 @@ const gameoverState = {
 
 const game = new Phaser.Game(800, 600);
 game.state.add('main', mainState);
+game.state.add('second', secondState);
 game.state.add('gameover', gameoverState);
 game.state.start('main');
