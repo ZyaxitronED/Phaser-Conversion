@@ -116,7 +116,7 @@ const mainState = {
     enemy.kill();
     if (this.aliens.countLiving() === 0) {
       this.score = this.score + 100;
-      this.game.state.start('second');
+      this.game.state.start('leveltwoscreen');
     }
     this.scoreDisplay.text = `Score: ${this.score} \nHighScore: ${this.highScore}`;
   },
@@ -410,6 +410,19 @@ const secondState = {
   }
 };
 
+const leveltwoscreenState = {
+  preload: function () {
+    game.load.image('leveltwoscreen', 'assets/leveltwoscreen.jpg')
+  },
+  create: function () {
+    const levelTwoScreenImg = game.cache.getImage('leveltwoscreen');
+    game.add.sprite(
+      game.world.centerX - levelTwoScreenImg.width / 2,
+      game.world.centerY - levelTwoScreenImg.height / 2,
+      'leveltwoscreen');
+    game.input.onDown.add(() => { game.state.start('second'); });
+  }
+};
 
 const gameoverState = {
   preload: function () {
@@ -427,6 +440,7 @@ const gameoverState = {
 
 const game = new Phaser.Game(800, 600);
 game.state.add('main', mainState);
+game.state.add('leveltwoscreen', leveltwoscreenState);
 game.state.add('second', secondState);
 game.state.add('gameover', gameoverState);
 game.state.start('main');
