@@ -107,7 +107,7 @@ const mainState = {
       this.highScore = this.score;
       localStorage.setItem('invadershighscore', this.highScore);
     }
-    game.state.start('second');
+    game.state.start('gameover');
   },
 
   hit: function (bullet, enemy) {
@@ -116,7 +116,7 @@ const mainState = {
     enemy.kill();
     if (this.aliens.countLiving() === 0) {
       this.score = this.score + 100;
-      this.gameOver();
+      this.game.state.start('second');
     }
     this.scoreDisplay.text = `Score: ${this.score} \nHighScore: ${this.highScore}`;
   },
@@ -143,11 +143,8 @@ const mainState = {
     if (live) {
       live.kill();
       this.ship.reset(this.game.rnd.integerInRange(0, this.game.width * 1), game.world.height * 0.92);
-    }
-
-    if (lives.countLiving() < 0) {
-      this.ship.kill();
-      this.enemyBullets.callAll('kill');
+    } else {
+      this.gameOver();
     }
   },
 
@@ -350,11 +347,8 @@ const secondState = {
     if (live) {
       live.kill();
       this.ship.reset(this.game.rnd.integerInRange(0, this.game.width * 1), game.world.height * 0.92);
-    }
-
-    if (lives.countLiving() < 0) {
-      this.ship.kill();
-      this.enemyBullets.callAll('kill');
+    } else {
+      this.gameOver();
     }
   },
 
