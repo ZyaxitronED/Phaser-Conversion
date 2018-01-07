@@ -85,6 +85,12 @@ const mainState = {
     //Creates the sound of the bullets being fired when the spacebar is pressed
     this.fireSound = game.add.audio('fire');
 
+    //Creates the sound of the explosion if an alien ship collides with the player
+    this.boomSound = game.add.audio('explosion');
+
+    //Creates the sound of losing a life
+    this.hurtSound = game.add.audio('hurt');
+
     //Game input
     this.cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
@@ -125,14 +131,17 @@ const mainState = {
     game.load.image('ship', 'assets/ship.png');
     game.load.image('enemy', 'assets/enemy.png');
     game.load.image('bullet', 'assets/bullet.png');
-    game.load.image('enemyBullet', 'assets/enemybullet.png')
+    game.load.image('enemyBullet', 'assets/enemybullet.png');
     game.load.spritesheet('explode', 'assets/explode.png', 128, 128);
     game.load.audio('fire', 'assets/fire.mp3');
+    game.load.audio('explosion', 'assets/explode.mp3');
+    game.load.audio('hurt', 'assets/hurt.mp3');
   },
 
   shipGotHit: function (alien, ship) {
     this.explosion.reset(this.ship.x + (this.ship.width / 2), this.ship.y + (this.ship.height / 2));
     this.ship.kill();
+    this.boomSound.play();
     this.explosion.animations.play('boom');
   },
 
@@ -142,6 +151,7 @@ const mainState = {
 
     if (live) {
       live.kill();
+      this.hurtSound.play();
       this.ship.reset(this.game.rnd.integerInRange(0, this.game.width * 1), game.world.height * 0.92);
     } else {
       this.gameOver();
@@ -293,6 +303,12 @@ const secondState = {
     //Creates the sound of the bullets being fired when the spacebar is pressed
     this.fireSound = game.add.audio('fire');
 
+    //Creates the sound of the explosion if an alien ship collides with the player
+    this.boomSound = game.add.audio('explosion');
+
+    //Creates the sound of losing a life
+    this.hurtSound = game.add.audio('hurt');
+
     //Game input
     this.cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
@@ -337,6 +353,7 @@ const secondState = {
   shipGotHit: function (alien, ship) {
     this.explosion.reset(this.ship.x + (this.ship.width / 2), this.ship.y + (this.ship.height / 2));
     this.ship.kill();
+    this.boomSound.play();
     this.explosion.animations.play('boom');
   },
 
@@ -346,6 +363,7 @@ const secondState = {
 
     if (live) {
       live.kill();
+      this.hurtSound.play();
       this.ship.reset(this.game.rnd.integerInRange(0, this.game.width * 1), game.world.height * 0.92);
     } else {
       this.gameOver();
@@ -496,6 +514,12 @@ const thirdState = {
     //Creates the sound of the bullets being fired when the spacebar is pressed
     this.fireSound = game.add.audio('fire');
 
+    //Creates the sound of the explosion if an alien ship collides with the player
+    this.boomSound = game.add.audio('explosion');
+
+    //Creates the sound of losing a life
+    this.hurtSound = game.add.audio('hurt');
+
     //Game input
     this.cursors = game.input.keyboard.createCursorKeys();
     game.input.keyboard.addKeyCapture([Phaser.Keyboard.SPACEBAR]);
@@ -540,6 +564,7 @@ const thirdState = {
   shipGotHit: function (alien, ship) {
     this.explosion.reset(this.ship.x + (this.ship.width / 2), this.ship.y + (this.ship.height / 2));
     this.ship.kill();
+    this.boomSound.play();
     this.explosion.animations.play('boom');
   },
 
@@ -549,6 +574,7 @@ const thirdState = {
 
     if (live) {
       live.kill();
+      this.hurtSound.play();
       this.ship.reset(this.game.rnd.integerInRange(0, this.game.width * 1), game.world.height * 0.92);
     } else {
       this.gameOver();
