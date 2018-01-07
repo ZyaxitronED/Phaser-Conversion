@@ -136,6 +136,9 @@ const mainState = {
     game.load.audio('fire', 'assets/fire.mp3');
     game.load.audio('explosion', 'assets/explode.mp3');
     game.load.audio('hurt', 'assets/hurt.mp3');
+    game.load.audio('next', 'assets/next.mp3');
+    game.load.audio('end', 'assets/end.mp3');
+    game.load.audio('finish', 'assets/finish.mp3');
   },
 
   shipGotHit: function (alien, ship) {
@@ -658,6 +661,8 @@ const leveltwoscreenState = {
     game.load.image('leveltwoscreen', 'assets/leveltwoscreen.jpg')
   },
   create: function () {
+    this.nextSound = game.add.audio('next');
+    this.nextSound.play();
     const levelTwoScreenImg = game.cache.getImage('leveltwoscreen');
     game.add.sprite(
       game.world.centerX - levelTwoScreenImg.width / 2,
@@ -672,6 +677,8 @@ const levelthreescreenState = {
     game.load.image('levelthreescreen', 'assets/levelthreescreen.jpg')
   },
   create: function () {
+    this.nextSound = game.add.audio('next');
+    this.nextSound.play();
     const levelThreeScreenImg = game.cache.getImage('levelthreescreen');
     game.add.sprite(
       game.world.centerX - levelThreeScreenImg.width / 2,
@@ -686,6 +693,8 @@ const congratsState = {
     game.load.image('congrats', 'assets/congrats.jpg')
   },
   create: function () {
+    this.finishSound = game.add.audio('finish');
+    this.finishSound.play();
     const congratsImg = game.cache.getImage('congrats');
     game.add.sprite(
       game.world.centerX - congratsImg.width / 2,
@@ -700,6 +709,8 @@ const gameoverState = {
     game.load.image('gameover', 'assets/gameover.jpg');
   },
   create: function () {
+    this.endSound = game.add.audio('end');
+    this.endSound.play();
     const gameOverImg = game.cache.getImage('gameover');
     game.add.sprite(
       game.world.centerX - gameOverImg.width / 2,
