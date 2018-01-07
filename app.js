@@ -527,7 +527,7 @@ const thirdState = {
     enemy.kill();
     if (this.aliens.countLiving() === 0) {
       this.score = this.score + 100;
-      this.gameOver();
+      this.game.state.start('congrats');
     }
     this.scoreDisplay.text = `Score: ${this.score} \nHighScore: ${this.highScore}`;
   },
@@ -655,6 +655,20 @@ const levelthreescreenState = {
   }
 };
 
+const congratsState = {
+  preload: function () {
+    game.load.image('congrats', 'assets/congrats.jpg')
+  },
+  create: function () {
+    const congratsImg = game.cache.getImage('congrats');
+    game.add.sprite(
+      game.world.centerX - congratsImg.width / 2,
+      game.world.centerY - congratsImg.height / 2,
+      'congrats');
+    game.input.onDown.add(() => { game.state.start('start'); });
+  }
+};
+
 const gameoverState = {
   preload: function () {
     game.load.image('gameover', 'assets/gameover.jpg');
@@ -676,5 +690,6 @@ game.state.add('leveltwoscreen', leveltwoscreenState);
 game.state.add('second', secondState);
 game.state.add('levelthreescreen', levelthreescreenState);
 game.state.add('third', thirdState);
+game.state.add('congrats', congratsState);
 game.state.add('gameover', gameoverState);
 game.state.start('start');
