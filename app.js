@@ -424,7 +424,7 @@ const thirdState = {
     this.aliens.physicsBodyType = Phaser.Physics.ARCADE;
 
     for (let i = 0; i < 48; i++) {
-      let c = this.aliens.create(100 + (i % 8) * 80, 80 + Math.floor(i / 8) * 60, 'enemy2');
+      let c = this.aliens.create(100 + (i % 8) * 80, 80 + Math.floor(i / 8) * 60, 'enemy3');
       c.body.immovable = true;
     }
 
@@ -448,8 +448,8 @@ const thirdState = {
     this.enemyBullets.enableBody = true;
     this.enemyBullets.physicsBodyType = Phaser.Physics.ARCADE;
 
-    for (let i = 0; i < 3; i++) {
-      let e = this.enemyBullets.create(0, 0, 'enemyBullet2');
+    for (let i = 0; i < 5; i++) {
+      let e = this.enemyBullets.create(0, 0, 'enemyBullet3');
       e.exists = false;
       e.visible = false;
       e.checkWorldBounds = true;
@@ -533,8 +533,8 @@ const thirdState = {
   },
 
   preload: function () {
-    game.load.image('enemy2', 'assets/enemy2.png');
-    game.load.image('enemyBullet2', 'assets/enemybullet2.png')
+    game.load.image('enemy3', 'assets/enemy3.png');
+    game.load.image('enemyBullet3', 'assets/enemybullet3.png')
   },
 
   shipGotHit: function (alien, ship) {
@@ -588,7 +588,7 @@ const thirdState = {
     this.ship.body.velocity.x = 0;
     this.aliens.forEach(
       (alien) => {
-        alien.body.position.y = alien.body.position.y + 0.2;
+        alien.body.position.y = alien.body.position.y + 0.3;
         if (alien.y + alien.height > game.height) { this.gameOver(); }
       }
     );
@@ -610,6 +610,20 @@ const thirdState = {
         this.enemyFires();
       }
     }
+  }
+};
+
+const startState = {
+  preload: function () {
+    game.load.image('start', 'assets/start.jpg')
+  },
+  create: function () {
+    const startImg = game.cache.getImage('start');
+    game.add.sprite(
+      game.world.centerX - startImg.width / 2,
+      game.world.centerY - startImg.height / 2,
+      'start');
+    game.input.onDown.add(() => { game.state.start('main'); });
   }
 };
 
@@ -651,15 +665,16 @@ const gameoverState = {
       game.world.centerX - gameOverImg.width / 2,
       game.world.centerY - gameOverImg.height / 2,
       'gameover');
-    game.input.onDown.add(() => { game.state.start('main'); });
+    game.input.onDown.add(() => { game.state.start('start'); });
   }
 };
 
 const game = new Phaser.Game(800, 600);
+game.state.add('start', startState);
 game.state.add('main', mainState);
 game.state.add('leveltwoscreen', leveltwoscreenState);
 game.state.add('second', secondState);
 game.state.add('levelthreescreen', levelthreescreenState);
 game.state.add('third', thirdState);
 game.state.add('gameover', gameoverState);
-game.state.start('main');
+game.state.start('start');
